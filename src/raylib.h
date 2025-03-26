@@ -127,21 +127,41 @@
     #define RAD2DEG (180.0f/PI)
 #endif
 
-// Allow custom memory allocators
-// NOTE: Require recompiling raylib sources
-#ifndef RL_MALLOC
-    #define RL_MALLOC(sz)       malloc(sz)
-#endif
-#ifndef RL_CALLOC
-    #define RL_CALLOC(n,sz)     calloc(n,sz)
-#endif
-#ifndef RL_REALLOC
-    #define RL_REALLOC(ptr,sz)  realloc(ptr,sz)
-#endif
-#ifndef RL_FREE
-    #define RL_FREE(ptr)        free(ptr)
-#endif
+#ifdef ERTS_INCLUDE_DIR
 
+    #include <erl_nif.h>
+    
+    #ifndef RL_MALLOC
+        #define RL_MALLOC(sz)       enif_alloc(sz)
+    #endif
+    #ifndef RL_CALLOC
+        #define RL_CALLOC(n,sz)     enif_alloc(n*sz)
+    #endif
+    #ifndef RL_REALLOC
+        #define RL_REALLOC(ptr,sz)  enif_realloc(ptr,sz)
+    #endif
+    #ifndef RL_FREE
+        #define RL_FREE(ptr)        enif_free(ptr)
+    #endif
+
+#else
+
+    // Allow custom memory allocators
+    // NOTE: Require recompiling raylib sources
+    #ifndef RL_MALLOC
+        #define RL_MALLOC(sz)       malloc(sz)
+    #endif
+    #ifndef RL_CALLOC
+        #define RL_CALLOC(n,sz)     calloc(n,sz)
+    #endif
+    #ifndef RL_REALLOC
+        #define RL_REALLOC(ptr,sz)  realloc(ptr,sz)
+    #endif
+    #ifndef RL_FREE
+        #define RL_FREE(ptr)        free(ptr)
+    #endif
+
+#endif
 // NOTE: MSVC C++ compiler does not support compound literals (C99 feature)
 // Plain structures in C++ (without constructors) can be initialized with { }
 // This is called aggregate initialization (C++11 feature)
