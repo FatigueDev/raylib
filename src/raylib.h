@@ -128,7 +128,10 @@
 #endif
 
 // Setup Erlang memalloc definitions.
-#include "memory.h"
+#ifndef ERLANG_MEMORY_ALLOCATORS
+#define ERLANG_MEMORY_ALLOCATORS
+    #include "memory.h"
+#endif
 
 // NOTE: MSVC C++ compiler does not support compound literals (C99 feature)
 // Plain structures in C++ (without constructors) can be initialized with { }
