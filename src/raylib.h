@@ -129,10 +129,10 @@
 
 #include <erl_nif.h>
 
-#ifndef CALLOC_WRAP
-
-    #define CALLOC_WRAP
-
+#ifndef RL_MALLOC
+    #define RL_MALLOC(sz)       enif_alloc(sz)
+#endif
+#ifndef RL_CALLOC
     void* calloc_wrap(int n, size_t sz) {
         size_t total_size = n * sz;
         void* ptr = enif_alloc(total_size);
@@ -141,12 +141,6 @@
         }
         return ptr;
     }
-#endif
-
-#ifndef RL_MALLOC
-    #define RL_MALLOC(sz)       enif_alloc(sz)
-#endif
-#ifndef RL_CALLOC
     #define RL_CALLOC(n,sz)     calloc_wrap(n, sz)
 #endif
 #ifndef RL_REALLOC
