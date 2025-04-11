@@ -127,32 +127,8 @@
     #define RAD2DEG (180.0f/PI)
 #endif
 
-#include <erl_nif.h>
-
-#ifndef RL_CALLOC_FUNCTION
-    #define RL_CALLOC_FUNCTION
-    void* calloc_wrap(int n, size_t sz) {
-        size_t total_size = n * sz;
-        void* ptr = enif_alloc(total_size);
-        if (ptr) {
-            memset(ptr, 0, total_size);
-        }
-        return ptr;
-    }
-#endif
-
-#ifndef RL_MALLOC
-    #define RL_MALLOC(sz)       enif_alloc(sz)
-#endif
-#ifndef RL_CALLOC
-    #define RL_CALLOC(n,sz)     calloc_wrap(n, sz)
-#endif
-#ifndef RL_REALLOC
-    #define RL_REALLOC(ptr,sz)  enif_realloc(ptr,sz)
-#endif
-#ifndef RL_FREE
-    #define RL_FREE(ptr)        enif_free(ptr)
-#endif
+// Setup Erlang memalloc definitions.
+#include "memory.h"
 
 // NOTE: MSVC C++ compiler does not support compound literals (C99 feature)
 // Plain structures in C++ (without constructors) can be initialized with { }
