@@ -135,14 +135,17 @@
 #endif
 
 #ifndef RL_CALLOC
-    #define RL_CALLOC(n, sz) ({\
-        size_t total_size = n * sz;\
-        void *ptr = enif_alloc(total_size);\
-        if (ptr) {\
-            memset(ptr, 0, total_size);\
-        }\
-        return ptr;\
-    })
+    static void *enif_calloc(int n, size_t sz) {
+        size_t total_size = n * sz;
+        void *ptr = enif_alloc(total_size);
+        if (ptr) {
+            memset(ptr, 0, total_size);
+        }
+        return ptr;
+    }
+    
+    #define RL_CALLOC(n, sz) enif_calloc(n, sz)
+        
 #endif
 
 #ifndef RL_REALLOC
