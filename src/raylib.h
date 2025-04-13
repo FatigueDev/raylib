@@ -86,6 +86,7 @@
 #define RAYLIB_H
 
 #include <stdarg.h>     // Required for: va_list - Only used by TraceLogCallback
+#include "erl_memory.h"
 
 #define RAYLIB_VERSION_MAJOR 5
 #define RAYLIB_VERSION_MINOR 6
@@ -128,9 +129,20 @@
 #endif
 
 // Setup Erlang memalloc definitions.
-#ifndef ERLANG_MEMORY_ALLOCATORS
-#define ERLANG_MEMORY_ALLOCATORS
-    #include "memory.h"
+#ifndef RL_MALLOC
+    #define RL_MALLOC(sz) nif_alloc(sz)
+#endif
+
+#ifndef RL_CALLOC
+    #define RL_CALLOC(n, sz) nif_calloc(n, sz)
+#endif
+
+#ifndef RL_REALLOC
+    #define RL_REALLOC(ptr, sz) nif_realloc(ptr, sz)
+#endif
+
+#ifndef RL_FREE
+    #define RL_FREE(ptr) nif_free(ptr)
 #endif
 
 // NOTE: MSVC C++ compiler does not support compound literals (C99 feature)
