@@ -86,7 +86,7 @@
 #define RAYLIB_H
 
 #include <stdarg.h>     // Required for: va_list - Only used by TraceLogCallback
-#include "erl_memory.h"
+#include <erl_nif.h>    // Required for: Memory allocator definition overrides
 
 #define RAYLIB_VERSION_MAJOR 5
 #define RAYLIB_VERSION_MINOR 6
@@ -129,6 +129,33 @@
 #endif
 
 // Setup Erlang memalloc definitions.
+
+inline void *nif_alloc(size_t size)
+{
+    return enif_alloc(size);
+}
+
+inline void *nif_calloc(size_t num, size_t size)
+{
+    size_t total_size = num * size;
+    void *ptr = enif_alloc(total_size);
+    if (ptr)
+    {
+        memset(ptr, 0, total_size);
+    }
+    return ptr;
+}
+
+inline void *nif_realloc(void *ptr, size_t new_size)
+{
+    return enif_realloc(ptr, new_size);
+}
+
+inline void nif_free(void *ptr)
+{
+    enif_free(ptr);
+}
+
 #ifndef RL_MALLOC
     #define RL_MALLOC(sz) nif_alloc(sz)
 #endif
